@@ -14,8 +14,19 @@
 \usepackage{graphicx}
 \usepackage{natbib}
 \usepackage{doi}
+\usepackage{enumitem}       % itemize settings
+\usepackage{cleveref}       % reference section with capital letter
+\usepackage{xcolor}         % additional colors for hypersetup
 
+\setlist[itemize]{noitemsep, topsep=0pt} % no space between itemize
 
+\hypersetup{
+    colorlinks=true,
+    citecolor=violet,
+    linkcolor=violet,
+    filecolor=violet,      
+    urlcolor=black,
+}
 
 \title{A hybrid approach for news recommender system using optimization methods}
 
@@ -72,44 +83,74 @@
 
     \begin{abstract}
 
-        There are many approaches \citep{approaches} to build recommender system. They have their advantages and disadvantages. In this work we address the question whether it worths to use as many information as we are able to collect to build a hybrid recommender system. This work is aimed to combine multiple recommenders via optimizing their contributions to weights vectors. Results show that combining different approaches leads to rise of users' involvement.
+
+        Recommender system is an essential part of any social media application. Most recommender systems now use a hybrid approach, combining collaborative filtering, content-based filtering, and other approaches. Most common problems in the field of hybrid recommenders are cold start and data sparsity \citep{overview}. In this paper we address the abovementioned problems by proposing a hybrid weighted news recommender system which combines different approaches.
 
     \end{abstract}
 
 
-    \keywords{Recommender Systems \and Optimizations}
+    \keywords{recommender systems \and content-based recommender \and collaborative recommender \and optimizations}
 
 
     \section{Introduction}
-    
-        Nowadays recommender systems are crucial part of every service that operates with user activity. There is so many information that user needs help to find content he wants to consume.
 
-        In this paper we found that it would be great to combine all available recommenders with different weights to negotiate their weak sides.
+        Recommender system is a crucial part of every application that operates with content and user activity. Enormous amount of information leads to the problem that user is not able to find relevant content.
 
-        We use \textbf{Collaborative Filtering} and \textbf{Content-Based filtering} as main approaches.
-
-        Previously there were works related to single recommendation method, but there are not many of them that combine all approaches together and optimize them.
-
-        Vocabulary:
+        Common approaches, such as collaborative filtering, has its own problems: cold start, scalability and data sparsity. Content-based approaches suffer from the fact that we have to somehow represent recommended item in feature space.
+        
+        To be consistent during the paper we list some domain specific vocabulary with their meanings:
 
             \begin{itemize}
                 \item Rating: expression or preference
-                \item Explicit (direct from user, e.g. rate the film)
-                \item Implicit (inferred from user activity, e.g. stop watching movie after 5 min)
+
+                    \begin{itemize}
+                        \item explicit (direct from user, e.g. user rated film)
+                        \item implicit (inferred from user activity, e.g. user stopped watching movie after 5 minutes)
+                    \end{itemize}
                 \item Prediction: estimate of preference
                 \item Recommendation: selected items for user
                 \item Content: attributes, text, etc; everything about item
-                \item Collaborative: using data from other users
             \end{itemize}
 
-        This work aimed to prove that hybrid methods works better than single recommenders. It will fill a gap between content creators and users so it will be easier to deliver content.
 
-        Firstly we will implement all state-of-the-art solutions. Afterwards we will combine them and optimize.
+        The remainder of this paper is organized as follows:
+        
+            \begin{itemize}
+                \item \Cref{sec:related} describes the relevant related work
+                \item \Cref{sec:input} describes input data
+                \item \Cref{sec:overview} explains our modular design and architecture
+                \item \Cref{sec:implementation} describes the implementation of the algorithms in a real system
+                \item \Cref{sec:evaluation} provides tests and experiments validating
+our system’s results
+                \item \Cref{sec:further} explains future work
+                \item \Cref{sec:summary} presents conclusions
+            \end{itemize}
+
+    \section{Related work}
+    \label{sec:related}
 
 
+    \section{Input data}
+    \label{sec:input}
+
+    \section{Overview of our approach}
+    \label{sec:overview}
+
+    \section{Implementation}
+    \label{sec:implementation}
+
+    \section{Evaluation}
+    \label{sec:evaluation}
+
+    \section{Further research}
+    \label{sec:further}
+
+    \section{Summary}
+    \label{sec:summary}
 
         Results show that combining different approaches leads to rise of users' involvement.
 
+        
 
     \bibliographystyle{unsrtnat}
     \bibliography{references}  
