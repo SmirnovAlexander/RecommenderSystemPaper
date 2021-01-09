@@ -95,7 +95,7 @@
     \end{abstract}
 
 
-    \keywords{recommender systems \and content-based recommender \and collaborative recommender \and optimizations}
+    \keywords{hybrid recommender systems \and content-based recommender \and collaborative recommender \and optimizations}
 
 
     \section{Introduction}
@@ -212,7 +212,7 @@ our system’s results
                 \vdots & \vdots  \\\bottomrule
             \end{tabular}
             \caption{news shows}
-            \label{tab:shows}
+            \label{tab:show}
         }
         \hfill
         \parbox{.45\textwidth}{
@@ -228,7 +228,7 @@ our system’s results
                 \vdots & \vdots  \\\bottomrule
             \end{tabular}
             \caption{news views}
-            \label{tab:views}
+            \label{tab:view}
             }
     \end{table}   
 
@@ -317,11 +317,13 @@ our system’s results
     \section{Overview of our approach}
     \label{sec:overview}
 
+    \subsection{Collaborative filtering recommendation}
+
+    For collaborative filtering recommendation we should have something known as user-item matrix which may be formed from user activity from tables (cite tables)
+
     \subsection{Popularity-based recommendation}
 
-    We are able to aggreage number of comments and emotions to measure popularity.
-
-    For measuring news item popularity views \& show can be aggregated from tables (cite tables) into: 
+    For measuring news item popularity following data can be aggregated: \hyperref[tab:show]{shows}, \hyperref[tab:view]{views}, \hyperref[tab:emotion]{emotions}, \hyperref[tab:comment]{comments}.
 
     \begin{table}[h]
         \centering
@@ -329,20 +331,20 @@ our system’s results
         \begin{tabular}{ccccc}
             \toprule
 
-            \emph{item\_id} & \emph{date} & \emph{source\_id} & \emph{shows}                                                               & \emph{views}                                                 \\\midrule
+            \emph{item\_id} & \emph{shows\_num} & \emph{views\_num} & \emph{emotions\_num} & \emph{comments\_num} \\\midrule
 
-        1 & 2021-01-08 22:08:39 & 9  & 1043 & 231        \\
-        2 & 2021-01-09 10:28:58 & 5  & 828 & 478  \\
-        3 & 2021-01-09 14:20:34 & 12 & 163 & 25 \\
-        \vdots & \vdots & \vdots & \vdots & \vdots \\\bottomrule
+            1 &  1043 & 231 & 52 & 7  \\
+            2 &  828 & 478 & 78 & 11 \\
+            3 &  163 & 25 & 5 & 0    \\
+            \vdots & \vdots & \vdots & \vdots & \vdots \\\bottomrule
 
 
          \hline
         \end{tabular}
         % }
 
-        \caption{news metadata}
-        \label{tab:meta}
+        \caption{aggregated popularity data}
+        \label{tab:popularity}
     \end{table}
 
 
