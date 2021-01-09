@@ -1,5 +1,8 @@
 \documentclass{article}
 
+\usepackage{fontspec}                % font for emoji
+\newfontfamily\DejaSans{DejaVu Sans}
+
 \usepackage{arxiv}
 
 \usepackage[utf8]{inputenc} % allow utf-8 input
@@ -13,13 +16,16 @@
 \usepackage{lipsum}		    % Can be removed after putting your text content
 \usepackage{graphicx}
 \usepackage{natbib}
-\usepackage{doi}
+\usepackage{doi}            % hyperlink to doi.org
 \usepackage{enumitem}       % itemize settings
 \usepackage{cleveref}       % reference section with capital letter
 \usepackage{xcolor}         % additional colors for hypersetup
+\usepackage{booktabs}       % beauful tables
+\usepackage{caption}        % table caption margin
+\usepackage{placeins}       % floatbarrier
 
+\captionsetup[table]{skip=10pt}          % table caption margin
 \setlist[itemize]{noitemsep, topsep=0pt} % no space between itemize
-
 \hypersetup{
     colorlinks=true,
     citecolor=violet,
@@ -129,12 +135,217 @@ our system’s results
     \section{Related work}
     \label{sec:related}
 
-
     \section{Input data}
     \label{sec:input}
 
+    As we solving domain specific task, we have domain specific data.
+
+    \subsection*{metadata}
+
+    \begin{table}[h]
+        \centering
+        % \resizebox{\textwidth}{!}{
+        \begin{tabular}{ccccc}
+            \toprule
+
+            \emph{item\_id} & \emph{date} & \emph{source\_id} \\\midrule
+
+            1 & 2021-01-08 22:08:39 & 9  \\
+            2 & 2021-01-09 10:28:58 & 5  \\
+            3 & 2021-01-09 14:20:34 & 12 \\
+            \vdots & \vdots & \vdots  \\\bottomrule
+
+
+         \hline
+        \end{tabular}
+        % }
+
+        \caption{news metadata}
+        \label{tab:meta}
+    \end{table}
+
+    
+    \begin{itemize}
+        \item \emph{source\_id}: source of news item
+    \end{itemize}
+
+
+    \subsection*{content}
+
+    \begin{table}[h]
+        \centering
+        \resizebox{\textwidth}{!}{
+        \begin{tabular}{cll}    \toprule
+
+            \emph{item\_id} &  \emph{news title} & \emph{news content} \\\midrule
+
+        1  &  Azerbaijan denies reports on construction of Turkish air bases in the country & Information that Turkey will create air bases ...        \\
+        2  &  Durov announced the massive transition of WhatsApp users to Telegram          & Telegram developer Pavel Durov said in his channel ...   \\
+        3  &  Passenger plane that disappeared from radar crashed                           & Passenger plane taking off from Jakarta, disappeared ... \\
+        \vdots & \vdots & \vdots \\\bottomrule
+
+
+         \hline
+        \end{tabular}
+        }
+
+        \caption{news item}
+        \label{tab:item}
+    \end{table}
+
+    \subsection*{shows \& views}
+
+    \begin{table}[h]
+        \parbox{.45\textwidth}{
+            \centering
+            \begin{tabular}{ccc}
+                \toprule
+
+                \emph{user\_id} & \emph{item\_id} \\\midrule
+                10 & 1  \\
+                10 & 2  \\
+                23 & 1  \\
+                23 & 3  \\
+                23 & 2  \\
+                38 & 3  \\
+                38 & 1  \\
+                \vdots & \vdots  \\\bottomrule
+            \end{tabular}
+            \caption{news shows}
+            \label{tab:shows}
+        }
+        \hfill
+        \parbox{.45\textwidth}{
+            \centering
+            \begin{tabular}{ccc}
+                \toprule
+
+                \emph{user\_id} & \emph{item\_id} \\\midrule
+                10 & 1  \\
+                10 & 2  \\
+                23 & 1  \\
+                38 & 3  \\
+                \vdots & \vdots  \\\bottomrule
+            \end{tabular}
+            \caption{news views}
+            \label{tab:views}
+            }
+    \end{table}   
+
+
+    \begin{itemize}
+        \item \emph{shows}: if \emph{item\_id} was shown to the \emph{user\_id}
+        \item \emph{views}: if \emph{item\_id} was clicked by the \emph{user\_id}
+    \end{itemize}
+
+    \newpage
+    
+
+    \subsection*{emotions \& comments}
+
+    There is an option to react on item via leaving emotion and/or writing a comment.
+
+    \begin{table}[h]
+        \parbox{.45\textwidth}{
+            \centering
+            \begin{tabular}{ccc}
+                \toprule
+
+                \emph{user\_id} & \emph{item\_id} & \emph{emotion\_id} \\\midrule
+                10 & 1 & 1  \\
+                10 & 2 & 3        \\
+                23 & 1 & 3        \\
+                38 & 3 & 2        \\
+                \vdots & \vdots & \vdots  \\\bottomrule
+
+            \end{tabular}
+            \caption{users' emotions}
+            \label{tab:emotion}
+        }
+        \hfill
+        \parbox{.45\textwidth}{
+            \centering
+            \resizebox{0.45\textwidth}{!}{
+            \begin{tabular}{ccc}
+                \toprule
+
+                \emph{user\_id} & \emph{item\_id} & \emph{comment} \\\midrule
+                10 & 1 & that's great  \\
+                10 & 1 & wish it will continue        \\
+                23 & 2 & whatsapp is not competetive anymore        \\
+                \vdots & \vdots & \vdots  \\\bottomrule
+
+            \end{tabular}
+        }
+            \caption{users' comments}
+            \label{tab:comment}
+            }
+    \end{table}   
+    
+    \begin{itemize}
+        \item \emph{emotion\_id}: one of \{{\DejaSans 😄, 😲, 😞, 😡, ♥ }\}
+    \end{itemize}
+
+
+    % \FloatBarrier
+
+
+    \subsection*{users' subscriptions}
+
+    If \emph{user\_id} subscribed to the \emph{source\_id}.
+
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{cc}
+            \toprule
+
+            \emph{user\_id} & \emph{source\_id} \\\midrule
+
+            10 & 9  \\
+            23 & 5  \\
+            \vdots & \vdots  \\\bottomrule
+
+        \end{tabular}
+
+        \caption{users' subscriptions}
+        \label{tab:subscriptions}
+    \end{table}
+
+
+
+
     \section{Overview of our approach}
     \label{sec:overview}
+
+    \subsection{Popularity-based recommendation}
+
+    We are able to aggreage number of comments and emotions to measure popularity.
+
+    For measuring news item popularity views \& show can be aggregated from tables (cite tables) into: 
+
+    \begin{table}[h]
+        \centering
+        % \resizebox{\textwidth}{!}{
+        \begin{tabular}{ccccc}
+            \toprule
+
+            \emph{item\_id} & \emph{date} & \emph{source\_id} & \emph{shows}                                                               & \emph{views}                                                 \\\midrule
+
+        1 & 2021-01-08 22:08:39 & 9  & 1043 & 231        \\
+        2 & 2021-01-09 10:28:58 & 5  & 828 & 478  \\
+        3 & 2021-01-09 14:20:34 & 12 & 163 & 25 \\
+        \vdots & \vdots & \vdots & \vdots & \vdots \\\bottomrule
+
+
+         \hline
+        \end{tabular}
+        % }
+
+        \caption{news metadata}
+        \label{tab:meta}
+    \end{table}
+
+
 
     \section{Implementation}
     \label{sec:implementation}
