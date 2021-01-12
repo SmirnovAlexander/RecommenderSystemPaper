@@ -23,6 +23,8 @@
 \usepackage{booktabs}       % beauful tables
 \usepackage{caption}        % table caption margin
 \usepackage{placeins}       % floatbarrier
+% Code insertion.
+\usepackage[outputdir=build]{minted}
 
 \captionsetup[table]{skip=10pt}          % table caption margin
 \setlist[itemize]{noitemsep, topsep=0pt} % no space between itemize
@@ -98,6 +100,7 @@
     \keywords{hybrid recommender systems \and content-based recommender \and collaborative recommender \and optimizations}
 
 
+
     \section{Introduction}
 
         Recommender system is a crucial part of every application that operates with content and user activity. Enormous amount of information leads to the problem that user is not able to find relevant content.
@@ -132,8 +135,33 @@ our system’s results
                 \item \Cref{sec:summary} presents conclusions
             \end{itemize}
 
+
+
     \section{Related work}
     \label{sec:related}
+
+    According to the study \citep{progress}, deep learning techniques are not supposed to beat conceptually and computationally simpler algorithms, so we won't touch them.
+
+    Our goal is to choose optimal algorithm for each of the following tasks:
+
+    \begin{itemize}
+        \item \textbf{Collaborative filtering}: generating predictions about the interests of a user by collecting preferences or taste information from other users. It is based on the assumption that if a person A has the same opinion as a person B on an issue, A is more likely to have B's opinion on a different issue than that of a randomly chosen person
+        \item \textbf{Content-based filtering}:
+        \item \textbf{Session filtering}:
+        \item \textbf{Popularity filtering}:
+        \item \textbf{Demographic filtering}:
+        \item \textbf{Time-based filtering}:
+    \end{itemize}
+
+    We face the problem that millions of news are theoretically suitable for being recommended, so it is not correct to use abovementioned methods on such large corpus of data. Instead, as stated in \citep{youtube} paper, we want to implement \mintinline{bash}|candidate generation| $\to$ \mintinline{bash}|ranking| pipeline to reduce number of candidates.
+
+
+
+    \subsection{Collaborative filtering}
+
+    There were many studies on this topic, but paper \citep{evaluation} proves that well-tuned basic SVD++ approach beats newely presented algorithms.
+
+
 
     \section{Input data}
     \label{sec:input}
@@ -238,7 +266,6 @@ our system’s results
         \item \emph{views}: if \emph{item\_id} was clicked by the \emph{user\_id}
     \end{itemize}
 
-    \newpage
     
 
     \subsection*{emotions \& comments}
@@ -319,8 +346,6 @@ our system’s results
 
     Out goal is to combine state-of-the-art approaches in recommender systems.
 
-    According to the study \citep{progress}, deep learning techniques are not supposed to beat conceptually and computationally simpler algorithms, so we won't touch them.
-
     Our approach consists of combining several techniques:
 
     \begin{itemize}
@@ -340,13 +365,21 @@ our system’s results
         \item Ranking
     \end{itemize}
 
+    \subsection{Architecture overview}
 
 
-    \subsection{Collaborative filtering recommendation}
+
+    \subsection{Components overview}
+
+
+
+    \subsubsection{Collaborative filtering recommendation}
+
+    We are using SVD++ algorithm.
 
     For collaborative filtering recommendation we should have something known as user-item matrix which may be formed from user activity from tables (cite tables)
 
-    \subsection{Popularity-based recommendation}
+    \subsubsection{Popularity-based recommendation}
 
     For measuring news item popularity following data can be aggregated: \hyperref[tab:show]{shows}, \hyperref[tab:view]{views}, \hyperref[tab:emotion]{emotions}, \hyperref[tab:comment]{comments}.
 
@@ -358,9 +391,9 @@ our system’s results
 
             \emph{item\_id} & \emph{shows\_num} & \emph{views\_num} & \emph{emotions\_num} & \emph{comments\_num} \\\midrule
 
-            1 &  1043 & 231 & 52 & 7  \\
-            2 &  828 & 478 & 78 & 11 \\
-            3 &  163 & 25 & 5 & 0    \\
+            1 & 1043 & 231 & 52 & 7  \\
+            2 & 828  & 478 & 78 & 11 \\
+            3 & 163  & 25  & 5  & 0  \\
             \vdots & \vdots & \vdots & \vdots & \vdots \\\bottomrule
 
 
