@@ -22,9 +22,9 @@
 \usepackage{xcolor}         % additional colors for hypersetup
 \usepackage{booktabs}       % beauful tables
 \usepackage{caption}        % table caption margin
+\usepackage{subcaption}     % images next to each other
 \usepackage{placeins}       % floatbarrier
-% Code insertion.
-\usepackage[outputdir=build]{minted}
+\usepackage[outputdir=build]{minted} % code insertion
 
 \captionsetup[table]{skip=10pt}          % table caption margin
 \setlist[itemize]{noitemsep, topsep=0pt} % no space between itemize
@@ -153,7 +153,7 @@ our system’s results
         \item \textbf{Time-based filtering}:
     \end{itemize}
 
-    We face the problem that millions of news are theoretically suitable for being recommended, so it is not correct to use abovementioned methods on such large corpus of data. Instead, as stated in \citep{youtube} paper, we want to implement \mintinline{bash}|candidate generation| $\to$ \mintinline{bash}|ranking| pipeline to reduce number of candidates.
+    We face the problem that millions of news are theoretically suitable for being recommended, so it is not correct to use abovementioned methods on such large corpus of data. Instead, as stated in \citep{youtube} paper, we want to implement \texttt{candidate generation} $\to$ \texttt{ranking} pipeline to reduce number of candidates.
 
 
 
@@ -341,45 +341,91 @@ our system’s results
 
 
 
+    \newpage
     \section{Overview of our approach}
     \label{sec:overview}
 
     Out goal is to combine state-of-the-art approaches in recommender systems.
 
-    Our approach consists of combining several techniques:
-
-    \begin{itemize}
-        \item \textbf{Collaborative filtering}: 
-        \item \textbf{Content-based filtering}:
-        \item \textbf{Session filtering}:
-        \item \textbf{Popularity filtering}:
-        \item \textbf{Demographic filtering}:
-        \item \textbf{Time-based filtering}:
-    \end{itemize}
-
     Solution consists of 2 parts:
 
-
     \begin{itemize}
-        \item Candidate generation
-        \item Ranking
+        \item \textbf{Candidate generation}: lowering number of items to recommend. These candidates are intended to be generally relevant to the user with high precision. The candidate generation part only provides broad personalization
+        \item \textbf{Ranking}: applying state-of-the-art algorithms to rank candidates generated on previous step
     \end{itemize}
 
-    \subsection{Architecture overview}
+    Architecture provided below on \cref{fig:architecture}:
+
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.8\textwidth]{./images/architechture.pdf}
+        \caption{architecture}
+        \label{fig:architecture}
+    \end{figure}
+
+    Candidate generation stage not only filters items, but also attaches weight to items.
+
+    \subsection{Candidate generation components overview}
+
+    Goal of candidate generation step is to remove generally irrelevant items so furher algorithms won't suffer from the amount of data.
+
+    \subsubsection{Time-based filtering}
+
+    As we operating with news data, first filter is the time filter. This part consists of 2 steps:
+
+    \begin{itemize}
+        \item \textbf{Filtering}: remove all items which are older than 3 days
+        \item \textbf{Ranking}: attach weights to all items left from filtering
+    \end{itemize}
+
+    For ranking we will use following formula:
+
+    $$r_i = \frac{(v_i - 1)}{(t - t_i + 2)^G}$$
+
+
+    \begin{itemize}
+        \item $r_i$ -- score for $item_i$
+        \item $v_i$ -- number of views of $item_i$
+        \item $t$ -- time right now, $t_i$ -- time of creation of $item_i$, $t - t_i$ -- hours passed since item created
+        \item $G$ -- gravity factor
+    \end{itemize}
+
+    The score decreases as $t - t_i$ increases, meaning that older items will get lower and lower scores. $v_i$ gets substracted by $-1$ to negate submitter's view. $t - t_i$ increased by $2$ so even if $t - t_i = 0$ gravity factor $G$ will take effect.
+
+
+    Below are show dependencies between score and hours since creation:
+
+    \begin{figure}[h]
+      \begin{subfigure}[b]{0.5\textwidth}
+        \includegraphics[width=\textwidth]{images/time_ranking_1.png}
+        \caption{different views number}
+      \end{subfigure}
+      \hfill
+      \begin{subfigure}[b]{0.5\textwidth}
+        \includegraphics[width=\textwidth]{images/time_ranking_2.png}
+        \caption{different gravity factor}
+      \end{subfigure}
+    \caption{time-based ranking scoring}
+        \label{fig:samples}
+    \end{figure}
+
+
+    At the end scores are normalized by \texttt{min-max} normalization.
+
+
+    \subsubsection{Demographic filtering}
+
+    \subsection{Ranking components overview}
 
 
 
-    \subsection{Components overview}
-
-
-
-    \subsubsection{Collaborative filtering recommendation}
+    \subsubsection{Collaborative filtering}
 
     We are using SVD++ algorithm.
 
     For collaborative filtering recommendation we should have something known as user-item matrix which may be formed from user activity from tables (cite tables)
 
-    \subsubsection{Popularity-based recommendation}
+    \subsubsection{Popularity filtering}
 
     For measuring news item popularity following data can be aggregated: \hyperref[tab:show]{shows}, \hyperref[tab:view]{views}, \hyperref[tab:emotion]{emotions}, \hyperref[tab:comment]{comments}.
 
@@ -406,12 +452,19 @@ our system’s results
     \end{table}
 
 
+    \subsubsection{Session filtering}
+
+    \subsubsection{Content-based filtering}
 
     \section{Implementation}
     \label{sec:implementation}
 
     \section{Evaluation}
     \label{sec:evaluation}
+
+    \subsection{Online}
+
+    \subsection{Offline}
 
     \section{Further research}
     \label{sec:further}
