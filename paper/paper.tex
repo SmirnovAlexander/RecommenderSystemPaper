@@ -176,12 +176,12 @@ As we solving domain specific task, we have domain specific data.
     \begin{tabular}{ccccc}
         \toprule
 
-        \emph{item\_id} & \emph{date} & \emph{source\_id} \\\midrule
+        \emph{item\_id} & \emph{date} & \emph{source\_id} & \emph{category}\\\midrule
 
-        1 & 2021-01-08 22:08:39 & 9  \\
-        2 & 2021-01-09 10:28:58 & 5  \\
-        3 & 2021-01-09 14:20:34 & 12 \\
-        \vdots & \vdots & \vdots  \\\bottomrule
+        1 & 2021-01-08 22:08:39 & 9  & politics, conflicts\\
+        2 & 2021-01-09 10:28:58 & 5  & IT, social media\\
+        3 & 2021-01-09 14:20:34 & 12 & accident\\
+        \vdots & \vdots & \vdots & \vdots \\\bottomrule
 
 
      \hline
@@ -367,7 +367,9 @@ Candidate generation stage not only filters items, but also attaches weight to i
 
 \subsection{Candidate generation components overview}
 
-Goal of candidate generation step is to remove generally irrelevant items so furher algorithms won't suffer from the amount of data.
+Goal of candidate generation step is to remove generally irrelevant items so furher algorithms won't suffer from the amount of data. Both time-based filtering and content-based filtering have their own weight at start. As user more interacting with the system, content-based filtering increasing its weight.
+
+Using recommenders described below, we attach score to each item and pick top $n$ (e.g. $50 000$) items.
 
 \subsubsection{Time-based filtering}
 
@@ -413,7 +415,9 @@ Below are show dependencies between score and hours since creation:
 At the end scores are normalized by \texttt{min-max} normalization.
 
 
-\subsubsection{Demographic filtering}
+\subsubsection{Content-based filtering (categories)}
+
+As was told before, content-based filtering have its own impact weight, which is small at start (we don't want to restrict user from content just because he made some random clicks), but it inscreases as user interacts with the system and we may make predictions about his categorial preferences.
 
 \subsection{Ranking components overview}
 
@@ -483,7 +487,7 @@ For measuring news item popularity following data can be aggregated: \hyperref[t
 
     \begin{itemize}
         \item \textit{recommendation\_list}: list of recommendations that consists of pairs (\textit{item\_id}, \textit{score})
-        \item \textit{content\_based\_filtering} \& \textit{collaborative\_filtering}: sources of recommendation
+        \item \textit{content\_based\_filtering \& collaborative\_filtering}: sources of recommendation
     \end{itemize}
 
     As we use weighted sum of our recommmenders, we have unique boost values for every user:
