@@ -105,7 +105,7 @@
 
     Recommender system is a crucial part of every application that operates with content and user activity. Enormous amount of information leads to the problem that user is not able to find relevant content.
 
-    Common approaches, such as collaborative filtering, has its own problems: cold start, scalability and data sparsity. Content-based approaches suffer from the fact that we have to somehow represent recommended item in feature space.
+    Common approaches, such as collaborative filtering, have their own problems: cold start, scalability and data sparsity. Content-based approaches suffer from the fact that we have to somehow represent recommended item in feature space.
     
     To be consistent during the paper we list some domain specific vocabulary with their meanings:
 
@@ -146,11 +146,11 @@ Our goal is to choose optimal algorithm for each of the following tasks:
 
 \begin{itemize}
     \item \textbf{Collaborative filtering}: generating predictions about the interests of a user by collecting preferences or taste information from other users. It is based on the assumption that if a person A has the same opinion as a person B on an issue, A is more likely to have B's opinion on a different issue than that of a randomly chosen person
-    \item \textbf{Content-based filtering}:
-    \item \textbf{Session filtering}:
-    \item \textbf{Popularity filtering}:
-    \item \textbf{Demographic filtering}:
-    \item \textbf{Time-based filtering}:
+    \item \textbf{Content-based filtering}: is based on the assumption that people who liked items with certain attributes in the past, will like the same kind of items in the future as well. It makes use of item features to compare the item with user profiles and provide recommendations
+    \item \textbf{Session filtering}: is selecting cadidates based on user's activity on current session
+    \item \textbf{Popularity filtering}: uses information such as number of views, shows, comments, etc.
+    \item \textbf{Demographic filtering}: uses demographic data such as age, gender, education, etc. for identifying categories of users
+    \item \textbf{Time-based filtering}: ranking news is a way that more recent items have higher scores
 \end{itemize}
 
 We face the problem that millions of news are theoretically suitable for being recommended, so it is not correct to use abovementioned methods on such large corpus of data. Instead, as stated in \citep{youtube} paper, we want to implement \texttt{candidate generation} $\to$ \texttt{ranking} pipeline to reduce number of candidates.
@@ -363,7 +363,7 @@ Architecture provided below on \cref{fig:architecture}:
     \label{fig:architecture}
 \end{figure}
 
-Candidate generation stage not only filters items, but also attaches weight to items.
+Candidate generation stage not only filters items, but also attaches weights to them.
 
 \subsection{Candidate generation components overview}
 
@@ -416,6 +416,75 @@ At the end scores are normalized by \texttt{min-max} normalization.
 
 
 \subsubsection{Content-based filtering (categories)}
+
+We are representing each news item as a vector of confidence values (how strong each item belongs to category).
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{cccccc}
+        \toprule
+        item\_id & \textit{politics} & \textit{IT} & \textit{social\_media} & $\cdots$ & \textit{confilcts} \\
+        \midrule
+        1 & 0.55 & 0 & 0 & $\cdots$ & 0.3 \\
+        2 & 0    & 0.81  & 0.62 & $\cdots$ & 0 \\
+        \vdots & \vdots & \vdots & \vdots & \vdots & \vdots\\
+
+        \bottomrule
+    \end{tabular}%
+    \caption{text vectors}
+    \label{tab:text_vectors}
+\end{table}
+
+Tagging is made in the following way: we have a dictionary of words that belongs to categories:
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{cc}
+        \toprule
+        \textit{word} & \textit{category} \\
+        \midrule
+        alexey\_nalalny & politics \\
+        crash & accident \\
+        telegeram & IT \\
+        \vdots & \vdots \\
+        \bottomrule
+    \end{tabular}%
+    \caption{words' categories}
+    \label{tab:words_categories}
+\end{table}
+
+Confidence is taken from word's tf-idf metric alongside all corpus.
+
+As user interacts with the system, we are forming his preferences vector in the following way:
+
+\begin{equation}
+    \texttt{user\_vector} \mathrel{+}= \texttt{action\_score} * \texttt{item\_vector}
+\end{equation}
+
+Where action score is taken from table:
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{cc}
+        \toprule
+        \textit{action} & \textit{score} \\
+        \midrule
+        shown but now viewed & -1 \\
+        viewed & 0.5 \\
+        emoji or comment & 0.5 \\
+        read till the end & 1 \\
+        \bottomrule
+    \end{tabular}%
+    \caption{actions' scores}
+    \label{tab:action_score}
+\end{table}
+
+As we now have both user's and items' vectors, we are able to find similarities between them:
+
+\begin{equation}
+    r_i = 1 - \cos{(\texttt{user\_vector}, \texttt{item\_vector})}
+\end{equation}
+
 
 As was told before, content-based filtering have its own impact weight, which is small at start (we don't want to restrict user from content just because he made some random clicks), but it inscreases as user interacts with the system and we may make predictions about his categorial preferences.
 
@@ -492,7 +561,7 @@ For measuring news item popularity following data can be aggregated: \hyperref[t
 
     As we use weighted sum of our recommmenders, we have unique boost values for every user:
 
-    \begin{table}[h]
+    \begin{table}[]
         \centering
         \begin{tabular}{ccc}
             \toprule
