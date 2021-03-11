@@ -36,7 +36,7 @@
     urlcolor=black,
 }
 
-\title{A hybrid approach for news recommender system using optimization methods}
+\title{A Hybrid Approach for News Recommender System using Optimization Methods}
 
 %\date{September 9, 1985}	% Here you can change the date presented in the paper title
 %\date{} 					% Or removing it
@@ -103,9 +103,20 @@
 
 \section{Introduction}
 
+
+
+
     Recommender system is a crucial part of every application that operates with content and user activity. Enormous amount of information leads to the problem that user is not able to find relevant content.
 
+    Recommender systems have been studied to present items, such as movies, music, and books \citep{movies} \citep{films} \citep{books}. The term now has a broader connotation, describing any system that produces individualized recommendations as output or has the effect of guiding the user in a personalized way to interesting or useful objects in a large space of possible options. Such systems have an obvious appeal in an environment where the amount of on-line information vastly outstrips any individual’s capability to survey it.
+
+    Recommender systems are now an integral part of some e-commerce sites such as Amazon.com and CDNow \citep{commerce}. It is the criteria of ’individualized’ and ’interesting and useful’ that separate the recommender system from information retrieval systems or search engines \citep{coin}. The semantics of a search engine are ’matching’: the system is supposed to return all those items that match the query ranked by degree of match.  Techniques such as relevance feedback enable a search engine to refine its representation of the user’s query, and represent a Simple form of recommendation.
+
+     There are three main types of recommendation methods: memorybased, model-based, and hybrid \citep{survey}. Memory-based methods \citep{memory} usually use similarity metrics to obtain the distance between two users or two items. Model-based methods use demographic, content, or aggregated information to create a model that generates recommendations. Hybrid \citep{combining} methods combine different types of recommenders to gain better performance.
+
     Common approaches, such as collaborative filtering, have their own problems: cold start, scalability and data sparsity. Content-based approaches suffer from the fact that we have to somehow represent recommended item in feature space.
+
+    So we are going to present a hybrid recommender system.
     
     To be consistent during the paper we list some domain specific vocabulary with their meanings:
 
@@ -128,7 +139,7 @@
             \item \Cref{sec:related} describes the relevant related work
             \item \Cref{sec:input} describes input data
             \item \Cref{sec:overview} explains our modular design and architecture
-            \item \Cref{sec:implementation} describes the implementation of the algorithms in a real system
+            % \item \Cref{sec:implementation} describes the implementation of the algorithms in a real system
             \item \Cref{sec:evaluation} provides tests and experiments validating
 our system’s results
             \item \Cref{sec:further} explains future work
@@ -145,7 +156,7 @@ According to the study \citep{progress}, deep learning techniques are not suppos
 Our goal is to choose optimal algorithm for each of the following tasks:
 
 \begin{itemize}
-    \item \textbf{Collaborative filtering}: generating predictions about the interests of a user by collecting preferences or taste information from other users. It is based on the assumption that if a person A has the same opinion as a person B on an issue, A is more likely to have B's opinion on a different issue than that of a randomly chosen person
+    \item \textbf{Collaborative filtering}: generating predictions about the interests of a user by collecting preferences or taste information from other users. It is based on the assumption that if a person A has the same opinion as a person B on an issue, A is more likely to have B's opinion on a different issue than that of a randomly chosen person; there were many studies on this topic, but paper \citep{evaluation} proves that well-tuned basic SVD++ approach beats newely presented algorithms
     \item \textbf{Content-based filtering}: is based on the assumption that people who liked items with certain attributes in the past, will like the same kind of items in the future as well. It makes use of item features to compare the item with user profiles and provide recommendations
     \item \textbf{Session filtering}: is selecting cadidates based on user's activity on current session
     \item \textbf{Popularity filtering}: uses information such as number of views, shows, comments, etc.
@@ -153,22 +164,31 @@ Our goal is to choose optimal algorithm for each of the following tasks:
     \item \textbf{Time-based filtering}: ranking news is a way that more recent items have higher scores
 \end{itemize}
 
+Also there is several ways \citep{survey1} to combine recommenders between each other:
+
+\begin{itemize}
+    \item \textbf{Weighted}: The scores (or votes) of several recommendation techniques are.combined together to produce a single recommendation
+    \item \textbf{Switching}: The system switches between recommendation techniques depending on the current situation
+    \item \textbf{Mixed}: Recommendations from several different recommenders are presented at the same time
+    \item \textbf{Feature combination}: Features from different recommendation data sources are thrown together into a single recommendation algorithm
+    \item \textbf{Cascade}: Features from different recommendation data sources are thrown together into a single recommendation algorithm 
+    \item \textbf{Feature augmentation}: Output from one technique is used as an input feature to another
+    \item \textbf{Meta-level}: The model learned by one recommender is used as input to another
+\end{itemize}
+
+
 We face the problem that millions of news are theoretically suitable for being recommended, so it is not correct to use abovementioned methods on such large corpus of data. Instead, as stated in \citep{youtube} paper, we want to implement \texttt{candidate generation} $\to$ \texttt{ranking} pipeline to reduce number of candidates.
-
-
-
-\subsection{Collaborative filtering}
-
-There were many studies on this topic, but paper \citep{evaluation} proves that well-tuned basic SVD++ approach beats newely presented algorithms.
-
 
 
 \section{Input data}
 \label{sec:input}
 
 As we solving domain specific task, we have domain specific data.
+Out data consist of information about news, so it includes following tables:
 
 \subsection*{metadata}
+
+The metadata about news. Here we have an \textit{item\_id} column, which stands for unique item indentifier, afterwards \textit{date}, that shows when this item was released. The \textit{source\_id} column stands for id of a publisher of this news item. \textit{category} column means category of current news item. This category is taken from news text by keywords.
 
 \begin{table}[h]
     \centering
@@ -182,9 +202,6 @@ As we solving domain specific task, we have domain specific data.
         2 & 2021-01-09 10:28:58 & 5  & IT, social media\\
         3 & 2021-01-09 14:20:34 & 12 & accident\\
         \vdots & \vdots & \vdots & \vdots \\\bottomrule
-
-
-     \hline
     \end{tabular}
     % }
 
@@ -193,12 +210,14 @@ As we solving domain specific task, we have domain specific data.
 \end{table}
 
 
-\begin{itemize}
-    \item \emph{source\_id}: source of news item
-\end{itemize}
+% \begin{itemize}
+%     \item \emph{source\_id}: source of news item
+% \end{itemize}
 
 
 \subsection*{content}
+
+Content table hold news texts in a \textit{news\_content} column. This is the primary information that is being used by our recommender system, because we are able to extract a lot of valuable data from text, such as topics.
 
 \begin{table}[h]
     \centering
@@ -211,17 +230,15 @@ As we solving domain specific task, we have domain specific data.
     2  &  Durov announced the massive transition of WhatsApp users to Telegram          & Telegram developer Pavel Durov said in his channel ...   \\
     3  &  Passenger plane that disappeared from radar crashed                           & Passenger plane taking off from Jakarta, disappeared ... \\
     \vdots & \vdots & \vdots \\\bottomrule
-
-
-     \hline
     \end{tabular}
     }
-
     \caption{news item}
     \label{tab:item}
 \end{table}
 
 \subsection*{shows \& views}
+
+As we operate with user activity we should have user logs, such as what items were clilcked at what time, so we have separate table that contains this information.    \emph{shows} stands for \emph{item\_id} was shown to the \emph{user\_id}, \emph{views} is if \emph{item\_id} was clicked by the \emph{user\_id}.
 
 \begin{table}[h]
     \parbox{.45\textwidth}{
@@ -261,16 +278,16 @@ As we solving domain specific task, we have domain specific data.
 \end{table}   
 
 
-\begin{itemize}
-    \item \emph{shows}: if \emph{item\_id} was shown to the \emph{user\_id}
-    \item \emph{views}: if \emph{item\_id} was clicked by the \emph{user\_id}
-\end{itemize}
+% \begin{itemize}
+%     \item \emph{shows}: if \emph{item\_id} was shown to the \emph{user\_id}
+%     \item \emph{views}: if \emph{item\_id} was clicked by the \emph{user\_id}
+% \end{itemize}
 
 
 
 \subsection*{emotions \& comments}
 
-There is an option to react on item via leaving emotion and/or writing a comment.
+We have an explicit feedback that user may leave on a news if he wants to. These options includes leaving emoji, which is one of \{{\DejaSans 😄, 😲, 😞, 😡, ♥ }\} or comment, which we can analyze afterwards.
 
 \begin{table}[h]
     \parbox{.45\textwidth}{
@@ -309,9 +326,9 @@ There is an option to react on item via leaving emotion and/or writing a comment
         }
 \end{table}   
 
-\begin{itemize}
-    \item \emph{emotion\_id}: one of \{{\DejaSans 😄, 😲, 😞, 😡, ♥ }\}
-\end{itemize}
+% \begin{itemize}
+%     \item \emph{emotion\_id}: one of \{{\DejaSans 😄, 😲, 😞, 😡, ♥ }\}
+% \end{itemize}
 
 
 % \FloatBarrier
@@ -319,7 +336,7 @@ There is an option to react on item via leaving emotion and/or writing a comment
 
 \subsection*{users' subscriptions}
 
-If \emph{user\_id} subscribed to the \emph{source\_id}.
+Each piece of news is being posted by some feed and user have an ability to subscribe to the feed. So it may give us useful information if user prefers content from one feed to content to another feed. So following table illustrates if \emph{user\_id} subscribed to the \emph{source\_id}.
 
 \begin{table}[h]
     \centering
@@ -337,8 +354,6 @@ If \emph{user\_id} subscribed to the \emph{source\_id}.
     \caption{users' subscriptions}
     \label{tab:subscriptions}
 \end{table}
-
-
 
 
 \newpage
@@ -443,7 +458,7 @@ Tagging is made in the following way: we have a dictionary of words that belongs
         \toprule
         \textit{word} & \textit{category} \\
         \midrule
-        alexey\_nalalny & politics \\
+        trump & politics \\
         crash & accident \\
         telegeram & IT \\
         \vdots & \vdots \\
@@ -496,7 +511,16 @@ As was told before, content-based filtering have its own impact weight, which is
 
 We are using SVD++ algorithm.
 
-For collaborative filtering recommendation we should have something known as user-item matrix which may be formed from user activity from tables (cite tables)
+For collaborative filtering recommendation we should have something known as user-item matrix which may be formed from user activity from tables (cite tables).
+
+We use the modification of Funk MF, which factorized the user-item rating matrix as the product of two lower dimensional matrices, the first one has a row for each user, while the second has a column for each item. The row or column associated to a specific user or item is referred to as latent factors.
+
+$r_{u i}=\sum_{f=0}^{n } H_{u, f} W_{f, i}$
+
+While Funk MF is able to provide very good recommendation quality, its ability to use only explicit numerical ratings as user-items interactions constitutes a limitation. Modern day recommender systems should exploit all available interactions both explicit (e.g. numerical ratings) and implicit (e.g. likes, purchases, skipped, bookmarked). To this end SVD++ was designed to take into account implicit interactions as well.  Compared to Funk MF, SVD++ takes also into account user and item bias.
+The predicted rating user $u$ will give to item $i$ is computed as:
+
+$r_{u i}=\mu+b_{i}+b_{u}+\sum_{f=0}^{n} H_{u, f} W_{f, i}$
 
 \subsubsection{Popularity filtering}
 
@@ -524,13 +548,25 @@ For measuring news item popularity following data can be aggregated: \hyperref[t
     \label{tab:popularity}
 \end{table}
 
+So when we apply information about news item popularity, we are able to give them scores via following algorithm:
 
-\subsubsection{Session filtering}
+\texttt{min-max} normalizing each of \emph{shows\_num}, \emph{views\_num}, \emph{emotions\_num}, \emph{comments\_num}, then dividing by 4 (to have 1 as max after sum), and sum all of these values.
+
 
 \subsubsection{Content-based filtering}
 
-\section{Implementation}
-\label{sec:implementation}
+latent Dirichlet allocation (LDA)
+
+
+\subsubsection{Session filtering}
+
+same as previous
+
+
+
+
+% \section{Implementation}
+% \label{sec:implementation}
 
 \section{Evaluation}
 \label{sec:evaluation}
@@ -561,7 +597,7 @@ For measuring news item popularity following data can be aggregated: \hyperref[t
 
     As we use weighted sum of our recommmenders, we have unique boost values for every user:
 
-    \begin{table}[]
+    \begin{table}[h]
         \centering
         \begin{tabular}{ccc}
             \toprule
@@ -582,9 +618,9 @@ For measuring news item popularity following data can be aggregated: \hyperref[t
 
 
 
-\subsection{Online}
+% \subsection{Online}
 
-\subsection{Offline}
+% \subsection{Offline}
 
 \section{Further research}
 \label{sec:further}
