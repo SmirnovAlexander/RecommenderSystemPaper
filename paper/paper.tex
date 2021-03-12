@@ -51,6 +51,7 @@
 	{\includegraphics[scale=0.07]{images/spbu.png}\hspace{1mm}Elena Mikhailova} \\
 	Department of Information and Analytical Systems\\
 	Saint Petersburg State University\\
+    ITMO university\\
 	Russia, Saint Petersburg\\
 	\texttt{e.mikhaylova@spbu.ru} \\
 	%% \AND
@@ -139,12 +140,12 @@
     
         \begin{itemize}
             \item \Cref{sec:related} describes the relevant related work
+            \item \Cref{sec:overview} contains overview of our approch
             \item \Cref{sec:input} describes input data
-            \item \Cref{sec:overview} explains our modular design and architecture
+            \item \Cref{sec:approach} explains our modular design and architecture
             % \item \Cref{sec:implementation} describes the implementation of the algorithms in a real system
             \item \Cref{sec:evaluation} provides tests and experiments validating
 our system’s results
-            \item \Cref{sec:further} explains future work
             \item \Cref{sec:summary} presents conclusions
         \end{itemize}
 
@@ -181,6 +182,27 @@ Also there is several ways \citep{survey1} to combine recommenders between each 
 
 We face the problem that millions of news are theoretically suitable for being recommended, so it is not correct to use abovementioned methods on such large corpus of data. Instead, as stated in \citep{youtube} paper, we want to implement \texttt{candidate generation} $\to$ \texttt{ranking} pipeline to reduce number of candidates.
 
+\section{Overview of our approach}
+\label{sec:overview}
+
+
+Out goal is to combine state-of-the-art approaches in recommender systems.
+
+Solution consists of 2 parts:
+
+\begin{itemize}
+    \item \textbf{Candidate generation}: lowering number of items to recommend. These candidates are intended to be generally relevant to the user with high precision. The candidate generation part only provides broad personalization
+    \item \textbf{Ranking}: applying state-of-the-art algorithms to rank candidates generated on previous step
+\end{itemize}
+
+Architecture provided below on \cref{fig:architecture}:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{./images/architechture.pdf}
+    \caption{architecture}
+    \label{fig:architecture}
+\end{figure}
 
 \section{Input data}
 \label{sec:input}
@@ -359,26 +381,10 @@ Each piece of news is being posted by some feed and user have an ability to subs
 
 
 \newpage
-\section{Overview of our approach}
-\label{sec:overview}
+\section{Our approach}
+\label{sec:approach}
 
-Out goal is to combine state-of-the-art approaches in recommender systems.
-
-Solution consists of 2 parts:
-
-\begin{itemize}
-    \item \textbf{Candidate generation}: lowering number of items to recommend. These candidates are intended to be generally relevant to the user with high precision. The candidate generation part only provides broad personalization
-    \item \textbf{Ranking}: applying state-of-the-art algorithms to rank candidates generated on previous step
-\end{itemize}
-
-Architecture provided below on \cref{fig:architecture}:
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\textwidth]{./images/architechture.pdf}
-    \caption{architecture}
-    \label{fig:architecture}
-\end{figure}
+Lets describe in detail candidate generation ranking pipeline.
 
 Candidate generation stage not only filters items, but also attaches weights to them.
 
@@ -399,8 +405,9 @@ As we operating with news data, first filter is the time filter. This part consi
 
 For ranking we will use following formula:
 
-$$r_i = \frac{(v_i - 1)}{(t - t_i + 2)^G}$$
-
+\begin{equation}
+    r_i = \frac{(v_i - 1)}{(t - t_i + 2)^G}
+\end{equation}
 
 \begin{itemize}
     \item $r_i$ -- score for $item_i$
@@ -409,7 +416,7 @@ $$r_i = \frac{(v_i - 1)}{(t - t_i + 2)^G}$$
     \item $G$ -- gravity factor
 \end{itemize}
 
-The score decreases as $t - t_i$ increases, meaning that older items will get lower and lower scores. $v_i$ gets substracted by $-1$ to negate submitter's view. $t - t_i$ increased by $2$ so even if $t - t_i = 0$ gravity factor $G$ will take effect.
+The score decreases as $t - t_i$ increases, meaning that older items will get lower and lower scores. $v_i$ gets substracted by $-1$ to negate submitter's view. $t - t_i$ increased by $2$ so even if $t - t_i = 0$ gravity factor $G$ will take effect. By default we set $G=1.8$ and we increase it if we want to prioritize newer news over old and vice versa.
 
 
 Below are show dependencies between score and hours since creation:
@@ -522,12 +529,19 @@ For collaborative filtering recommendation we should have something known as use
 
 We use the modification of Funk MF, which factorized the user-item rating matrix as the product of two lower dimensional matrices, the first one has a row for each user, while the second has a column for each item. The row or column associated to a specific user or item is referred to as latent factors.
 
-$r_{u i}=\sum_{f=0}^{n } H_{u, f} W_{f, i}$
+\begin{equation}
+    r_{u i}=\sum_{f=0}^{n } H_{u, f} W_{f, i}
+\end{equation}
+
 
 While Funk MF is able to provide very good recommendation quality, its ability to use only explicit numerical ratings as user-items interactions constitutes a limitation. Modern day recommender systems should exploit all available interactions both explicit (e.g. numerical ratings) and implicit (e.g. likes, purchases, skipped, bookmarked). To this end SVD++ was designed to take into account implicit interactions as well.  Compared to Funk MF, SVD++ takes also into account user and item bias.
 The predicted rating user $u$ will give to item $i$ is computed as:
 
-$r_{u i}=\mu+b_{i}+b_{u}+\sum_{f=0}^{n} H_{u, f} W_{f, i}$
+\begin{equation}
+    r_{u i}=\mu+b_{i}+b_{u}+\sum_{f=0}^{n} H_{u, f} W_{f, i}
+\end{equation}
+
+
 
 \subsubsection{Popularity filtering}
 
@@ -559,6 +573,10 @@ So when we apply information about news item popularity, we are able to give the
 
 \texttt{min-max} normalizing each of \emph{shows\_num}, \emph{views\_num}, \emph{emotions\_num}, \emph{comments\_num}, then dividing by 4 (to have 1 as max after sum), and sum all of these values.
 
+\begin{equation}
+    r_i = \frac{\emph{shows\_num\_norm}}{4} + \frac{\emph{views\_num\_norm}}{4} + \frac{\emph{emotions\_num\_norm}}{4} + \frac{\emph{comments\_num\_norm}}{4} 
+\end{equation}
+
 
 \subsubsection{Content-based filtering (LDA)}
 
@@ -567,13 +585,28 @@ For Content-based filtering we should somehow vectorize news items and represent
 So we are able vectorize text by the measure of how each text belongs to each category, from 0 to 1.
 For example, suppose we have 3 topic, that were extracted by LDA model:
 
-\begin{itemize}
-    \item \textbf{Topic 1:} ruble, bank, money, dollar
-    \item \textbf{Topic 2:} cooking, sugar, gordon\_ramsay
-    \item \textbf{Topic 3:} IT, smartphone, technology, hacker
-\end{itemize}
+\begin{table}[h]
+\centering
+% \resizebox{\textwidth}{!}{%
+\begin{tabular}{ccc}
+    \toprule
+\textit{topic} & \textit{word} & \textit{score} \\
+    \midrule
+1 & dollar & 0.3 \\
+1 & bank & 0.2 \\
+1 & money & 0.15 \\
+2 & sugar & 0.4 \\
+2 & cooking & 0.3 \\
+3 & IT & 0.25 \\
+3 & hacker & 0.2 \\
+\bottomrule
+\end{tabular}%
+% }
+\caption{words' topics}
+\label{tab:words_topics}
+\end{table}
 
-And we have following text: ``Hackers use mobile emulators to steal millions of dollars''. Its vectorized form is going to be $[0.7, 0, 0.8]$.
+And we have following text: ``Hackers use mobile emulators to steal millions of dollars''. Its vectorized form is going to be $[0.3, 0, 0.2]$.
 
 All calculations are done as was told in \ref{content}.
 
@@ -583,7 +616,10 @@ All calculations are done as was told in \ref{content}.
 We want to instantly react on user's actions, so we applying session filtering in the following way:
 trying to find similar item to those, user have just watched. So 
 
-$$r_{i}=\sum_{k=0}^{n} \textit{similarity}\{\textit{current\_item\_vector}, \textit{last\_viewed\_vector}_{k}\} \times \textit{weight}_k$$
+\begin{equation}
+    r_{i}=\sum_{k=0}^{n} \textit{similarity}\{\textit{current\_item\_vector}, \textit{last\_viewed\_vector}_{k}\} \times \textit{weight}_k
+\end{equation}
+
 
 where $\textit{weight}_k$ is the weight of last viewed vector. Weight is bigger if item was seen more recently.
 
@@ -638,7 +674,13 @@ where $\textit{weight}_k$ is the weight of last viewed vector. Weight is bigger 
 
     To illustrate score calculation of recommendations, take a look at 1st row of table \hyperref[tab:recommendation_logs]{recommendations' logs}. We see recommendation $r = \{(2, 0.91), (1, 0.74), (3, 0.23)\}$ for user $u = 2$, so we should find boost values for this particular user in table \hyperref[tab:boost_values]{boost values}: content-based filtering boost $b_{cbf}$ for $u$ is $1$, collaborative filtering boost $b_{cf}$ is $0.5$. So final score is calculated in the following way: $0.91 = 0.45 * b_{cbf} + 0.92 * b_{cf} = 0.45 * 1 + 0.92 * 0.5 = 0.45 + 0.46$.
 
-    Also we have information about \hyperref[tab:show]{shows} and \hyperref[tab:view]{views}, so we are able to track what item in recommendation list was clicked and what item was skipped, so depending on this information we can track if user liked item or not.
+    Also we have information about \hyperref[tab:show]{shows} and \hyperref[tab:view]{views}, so we are able to track what item in recommendation list was clicked and what item was skipped, so depending on this information we can track if user liked item or not. For instance, let's consider situation that user clicked on 4th recommendation from recommendation list. That means that first 3 recommedations are bad, and we should penalty recommenders that prioritized these items, considering the fact that 1st item is the worst:
+
+\begin{equation}
+    \textit{penalty} = \frac{1}{\textit{num\_of\_item\_in\_rank}}
+\end{equation}
+
+
 
     So having all of this information allows us to tune the impact weight of each recommender using grid search.
 
@@ -662,7 +704,7 @@ In order to forecast rating on news, we take similarity of customers and correla
 
 What we contribute is we proposed a new hybrid recommendation method based on features to improve the performance.
 
-Results show that combining different approaches leads to rise of users' involvement.
+Results show that combining different approaches leads to rise of users' involvement. Firstly we had only a collaborative recommender and user averagely spend on news tab around 2 minutes. Now when we applied hybrid recommender users spend in average 5 minutes on news tab.
 
 We use the average method to set the weight to adjust the predicted rating in this article, whose rationality needs to be further improved. Moreover, our method has yet to be tested on other data sets for its performance.  
 
