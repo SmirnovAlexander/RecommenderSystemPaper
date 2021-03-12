@@ -431,6 +431,7 @@ At the end scores are normalized by \texttt{min-max} normalization.
 
 
 \subsubsection{Content-based filtering (categories)}
+\label{content}
 
 We are representing each news item as a vector of confidence values (how strong each item belongs to category).
 
@@ -553,15 +554,32 @@ So when we apply information about news item popularity, we are able to give the
 \texttt{min-max} normalizing each of \emph{shows\_num}, \emph{views\_num}, \emph{emotions\_num}, \emph{comments\_num}, then dividing by 4 (to have 1 as max after sum), and sum all of these values.
 
 
-\subsubsection{Content-based filtering}
+\subsubsection{Content-based filtering (LDA)}
 
-latent Dirichlet allocation (LDA)
+For Content-based filtering we should somehow vectorize news items and represent user preferences via these vectorized news. We will use Latent Dirichlet Allocation (LDA), which is a generative statistical model that allows sets of observations to be explained by unobserved groups that explain why some parts of the data are similar. For example, if observations are words collected into documents, it posits that each document is a mixture of a small number of topics and that each word's presence is attributable to one of the document's topics.
+
+So we are able vectorize text by the measure of how each text belongs to each category, from 0 to 1.
+For example, suppose we have 3 topic, that were extracted by LDA model:
+
+\begin{itemize}
+    \item \textbf{Topic 1:} ruble, bank, money, dollar
+    \item \textbf{Topic 2:} cooking, sugar, gordon\_ramsay
+    \item \textbf{Topic 3:} IT, smartphone, technology, hacker
+\end{itemize}
+
+And we have following text: ``Hackers use mobile emulators to steal millions of dollars''. Its vectorized form is going to be $[0.7, 0, 0.8]$.
+
+All calculations are done as was told in \ref{content}.
 
 
 \subsubsection{Session filtering}
 
-same as previous
+We want to instantly react on user's actions, so we applying session filtering in the following way:
+trying to find similar item to those, user have just watched. So 
 
+$$r_{i}=\sum_{k=0}^{n} \textit{similarity}\{\textit{current\_item\_vector}, \textit{last\_viewed\_vector}_{k}\} \times \textit{weight}_k$$
+
+where $\textit{weight}_k$ is the weight of last viewed vector. Weight is bigger if item was seen more recently.
 
 
 
