@@ -112,6 +112,8 @@
 
     Recommender systems are now an integral part of some e-commerce sites such as Amazon.com and CDNow \citep{commerce}. It is the criteria of ’individualized’ and ’interesting and useful’ that separate the recommender system from information retrieval systems or search engines \citep{coin}. The semantics of a search engine are ’matching’: the system is supposed to return all those items that match the query ranked by degree of match.  Techniques such as relevance feedback enable a search engine to refine its representation of the user’s query, and represent a Simple form of recommendation.
 
+    Field of news recommendation has its own specific: news are getting old really fast and they don't need to be recommended.
+
      There are three main types of recommendation methods: memorybased, model-based, and hybrid \citep{survey}. Memory-based methods \citep{memory} usually use similarity metrics to obtain the distance between two users or two items. Model-based methods use demographic, content, or aggregated information to create a model that generates recommendations. Hybrid \citep{combining} methods combine different types of recommenders to gain better performance.
 
     Common approaches, such as collaborative filtering, have their own problems: cold start, scalability and data sparsity. Content-based approaches suffer from the fact that we have to somehow represent recommended item in feature space.
@@ -471,11 +473,15 @@ Tagging is made in the following way: we have a dictionary of words that belongs
 
 Confidence is taken from word's tf-idf metric alongside all corpus.
 
+There is limited number of words, but during the day new words are being added and every night item vectors are being recalculated.
+
 As user interacts with the system, we are forming his preferences vector in the following way:
 
 \begin{equation}
     \texttt{user\_vector} \mathrel{+}= \texttt{action\_score} * \texttt{item\_vector}
 \end{equation}
+
+User vector has same dimension as item vector.
 
 Where action score is taken from table:
 
@@ -634,21 +640,31 @@ where $\textit{weight}_k$ is the weight of last viewed vector. Weight is bigger 
 
     Also we have information about \hyperref[tab:show]{shows} and \hyperref[tab:view]{views}, so we are able to track what item in recommendation list was clicked and what item was skipped, so depending on this information we can track if user liked item or not.
 
+    So having all of this information allows us to tune the impact weight of each recommender using grid search.
+
 
 
 % \subsection{Online}
 
 % \subsection{Offline}
 
-\section{Further research}
-\label{sec:further}
+% \section{Further research}
+% \label{sec:further}
 
 \section{Summary}
 \label{sec:summary}
 
-    Results show that combining different approaches leads to rise of users' involvement.
 
-    
+Recommendation system has been widely used in different areas. Collaborative filtering focuses on rating, ignoring the features of items itself. In order to better evaluate customer preference on news, we use LDA model to
+calculate customer preference on news topics.
+
+In order to forecast rating on news, we take similarity of customers and correlation between customers and news into consideration. Experiment shows that our hybrid recommendation method based on features performances better in our social media app.
+
+What we contribute is we proposed a new hybrid recommendation method based on features to improve the performance.
+
+Results show that combining different approaches leads to rise of users' involvement.
+
+We use the average method to set the weight to adjust the predicted rating in this article, whose rationality needs to be further improved. Moreover, our method has yet to be tested on other data sets for its performance.  
 
 \bibliographystyle{unsrtnat}
 \bibliography{references}  
