@@ -179,7 +179,7 @@
     \ifthenelse{\equal{\my@title@type@ru}{coursework}}
     {Курсовая работа}
     {\ifthenelse{\equal{\my@title@type@ru}{diploma}}
-    {Дипломная работа}
+    {Отчет по преддипломной практике}
     {\ifthenelse{\equal{\my@title@type@ru}{master}}
     {Магистерская диссертация}
     {\ifthenelse{\equal{\my@title@type@ru}{bachelor}}
@@ -196,8 +196,8 @@
     \vskip 5em
     Научный руководитель:\\
     \my@title@supervisorPosition@ru\ \my@title@supervisor@ru\sigspace
-%%    Рецензент:\\
-  %%  \my@title@reviewerPosition@ru\ \my@title@reviewer@ru
+    Рецензент:\\
+    \my@title@reviewerPosition@ru\ \my@title@reviewer@ru
     }
 \end{center}
 \end{titlepage}
@@ -234,7 +234,7 @@
     \ifthenelse{\equal{\my@title@type@en}{coursework}}
     {Course Work}
     {\ifthenelse{\equal{\my@title@type@en}{diploma}}
-    {Graduation Thesis}
+    {Pre-Diploma practice report}
     {\ifthenelse{\equal{\my@title@type@en}{master}}
     {Master's Thesis}
     {\ifthenelse{\equal{\my@title@type@en}{bachelor}}
