@@ -1,7 +1,8 @@
 PAPER=paper.tex
 COMPILER=xelatex
 BUILDDIR=build
-FLAGS=-shell-escape \
+FLAGS=-synctex=1 \
+	  -shell-escape \
       -interaction nonstopmode \
       -halt-on-error \
       -file-line-error \

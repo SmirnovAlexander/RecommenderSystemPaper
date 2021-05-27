@@ -147,6 +147,7 @@
             \item \Cref{sec:evaluation} provides tests and experiments validating
 our system’s results
             \item \Cref{sec:summary} presents conclusions
+
         \end{itemize}
 
 
@@ -482,15 +483,7 @@ Confidence is taken from word's tf-idf metric alongside all corpus.
 
 There is limited number of words, but during the day new words are being added and every night item vectors are being recalculated.
 
-As user interacts with the system, we are forming his preferences vector in the following way:
-
-\begin{equation}
-    \texttt{user\_vector} \mathrel{+}= \texttt{action\_score} * \texttt{item\_vector}
-\end{equation}
-
-User vector has same dimension as item vector.
-
-Where action score is taken from table:
+We have actions while user interacts with the system and weights for items for each interaction (\cref{tab:action_score}).
 
 \begin{table}[h]
     \centering
@@ -498,21 +491,46 @@ Where action score is taken from table:
         \toprule
         \textit{action} & \textit{score} \\
         \midrule
-        shown but now viewed & -1 \\
-        viewed & 0.5 \\
-        emoji or comment & 0.5 \\
+        shown & -1 \\
+        viewed & 2 \\
+        emoji or comment & 1 \\
         read till the end & 1 \\
         \bottomrule
     \end{tabular}%
-    \caption{actions' scores}
+    \caption{actions' values}
     \label{tab:action_score}
 \end{table}
 
-As we now have both user's and items' vectors, we are able to find similarities between them:
+All data is aggregated and each news item have an action score depending on what user had done with it. For instance, suppose user had viewed and item and left an emoji. Total score will be: $-1$ (user was shown an item) $+2$ (user viewed an item) $+1$ (user left an emoji) $=2$.
+
+As user interacts with the system, we are forming his preferences vector in the following way:
 
 \begin{equation}
-    r_i = 1 - \cos{(\texttt{user\_vector}, \texttt{item\_vector})}
+    u_i = \sum_{j=1}^{n} v_j \times s_j
 \end{equation}
+
+\begin{itemize}
+    \item $u_i$ -- vector of $user_i$
+    \item $v_j$ -- vector of $item_j$
+    \item $s_j$ -- action value of $item_j$
+\end{itemize}
+
+User vector has same dimension as item vector.
+
+
+As we now have both user's and items' vectors, we are able to find similarities between them:
+
+
+\begin{equation}
+    r_{ui}=\cos (\theta)=\frac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{u}\|\|\mathbf{v}\|}=\frac{\sum_{i=1}^{n} u_{i} v_{i}}{\sqrt{\sum_{i=1}^{n} u_{i}^{2}} \sqrt{\sum_{i=1}^{n} v_{i}^{2}}}
+\end{equation}
+
+\begin{itemize}
+    \item $r_{ui}$ -- rating from $user$ to $item$
+    \item $u$ -- vector of $user$
+    \item $v$ -- vector of $item$
+\end{itemize}
+
 
 
 As was told before, content-based filtering have its own impact weight, which is small at start (we don't want to restrict user from content just because he made some random clicks), but it inscreases as user interacts with the system and we may make predictions about his categorial preferences.
@@ -625,11 +643,24 @@ where $\textit{weight}_k$ is the weight of last viewed vector. Weight is bigger 
 
 
 
+\subsection{Combining}
+
+    So having all of this information allows us to tune the impact weight of each recommender using grid search. So we are optimizing weight that are making impact at each recommender.
+
+    The metric we are optimizing is MAP@20 that stands for Mean Average Precision.
+
+    
+
+
+
+
 % \section{Implementation}
 % \label{sec:implementation}
 
 \section{Evaluation}
 \label{sec:evaluation}
+
+\subsection{Overview}
 
     For evaluation we have information about what recommendation list was given to each user, and what is the source of the recommendation:
 
@@ -680,11 +711,15 @@ where $\textit{weight}_k$ is the weight of last viewed vector. Weight is bigger 
     \textit{penalty} = \frac{1}{\textit{num\_of\_item\_in\_rank}}
 \end{equation}
 
+\subsection{Metrics}
 
+We are using three metrics to measure the quality of our recommenders:
 
-    So having all of this information allows us to tune the impact weight of each recommender using grid search.
-
-
+    \begin{itemize}
+        \item RMSE
+        \item NDCG
+        \item MAP@20
+    \end{itemize}
 
 % \subsection{Online}
 
