@@ -1,11 +1,12 @@
 \documentclass[xetex,mathserif,serif]{beamer}
 
+\setbeamertemplate{caption}[numbered]
 % Hyperlinks.
 \usepackage{hyperref}
 
-% % Language settings.
-% \usepackage{polyglossia}
-% \setdefaultlanguage[babelshorthands=true]{russian}
+% Language settings.
+\usepackage{polyglossia}
+\setdefaultlanguage[babelshorthands=true]{russian}
 
 % Setting outer theme.
 \useoutertheme{infolines}
@@ -27,8 +28,12 @@
 
 \usepackage{mathtools}
 
-\title[Recommender system]{A hybrid approach \\ for news recommender system \\ using optimization methods}
-\author[Alexander Smirnov]{Alexander Smirnov}
+\title[СПбГУ]{Построение гибридной рекомендательной
+системы новостей с применением методов
+оптимизации}
+\author[Смирнов Александр 17.Б07-мм]{Смирнов Александр 17.Б07-мм}
+\institute[]{Научный руководитель: к.ф.-м.н., доц. Михайлова Елена Георгиевна \\
+             Рецензент: руководитель отдела инженерии ООО ``АЙ ТИ Сервис'', Осипов Евгений Валерьевич}
 % \author[Alexander Smirnov]{Alexander Smirnov\\ \footnotesize supervisor: Elena Mikhailova}
 
 \begin{document}
@@ -41,18 +46,72 @@
 % \subsection{Approaches}
 
 \begin{frame}
-	\frametitle{Introduction}
+	\frametitle{Введение}
 
 	\begin{itemize}
-		\item Many approaches
+		\item Приложение ЯRUS:
 		      \begin{itemize}
-			      \item Content-based
-			      \item Collaborative
+			      \item Агрегатор новостей;
+			      \item Социальная сеть;
+		      \end{itemize}
+		\item Огромный объём информации:
+		      \begin{itemize}
+			      \item Необходима персонализация.
 		      \end{itemize}
 	\end{itemize}
 
 \end{frame}
 
+
+
+\begin{frame}
+	\frametitle{Постановка задачи}
+
+	\begin{itemize}
+		\item Цель:
+            \begin{itemize}
+                \item Реализация рекомендательной системы новостей в приложении ЯRUS;
+            \end{itemize}
+
+		\item Задачи:
+            \begin{itemize}
+                \item Исследование предметной области;
+                \item Анализ проблем существующих подходов;
+                \item Реализация подходов;
+                \item Совмещение подходов в единую систему;
+                \item Анализ качества работы рекомендательной системы;
+                \item Оценка влияния решения на ключевые показатели эффективности.
+            \end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Проблемы}
+
+	\begin{itemize}
+		\item Проблемы:
+		      \begin{itemize}
+			      \item Холодный старт;
+			      \item Вычислительные затраты
+			      \item Разреженность данных
+			      \item 
+		      \end{itemize}
+		\item clickbait
+		\item 
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Описание модели}
+
+	\begin{itemize}
+		\item веса меняются со временем работы алгоритма
+		\item геолокация
+		\item 
+	\end{itemize}
+\end{frame}
 
 \begin{frame}
 	\frametitle{Content-based approach}
@@ -117,29 +176,63 @@
 	\end{itemize}
 \end{frame}
 
-
 \begin{frame}
-	\frametitle{Diagram}
+    \frametitle{Оценка качества (offline)}
 
-	\begin{figure}[h]
-		\includegraphics[width=0.8\textwidth]{./images/main.png}
-		\centering
-	\end{figure}
+	\begin{itemize}
+		\item MAP@20
+		\item NDCG
+		\item 
+	\end{itemize}
 \end{frame}
 
 
-
 \begin{frame}
-	\frametitle{Difficulties}
+	\frametitle{Оценка качества (online)}
 
 	\begin{itemize}
-		\item Many approacher to every recommender
-		      \begin{itemize}
-			      \item A / B testing
-		      \end{itemize}
-		\item Many candidates (candidate generation)
-		\item High load
+		\item A/B тестирование:
+            \begin{itemize}
+                \item Время нахождения на вкладке ``новости'' за одну сессию;
+            \end{itemize}
+		\item 
+		\item 
 	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Апробация}
+
+    \begin{figure}[h]
+        \includegraphics[width=0.3\textwidth]{./images/screenshot.png}
+        \caption{Персонализированная рекомендательная лента}
+        \label{fig:feed}
+        \centering
+    \end{figure}
+
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Результаты}
+	\begin{itemize}
+		\item 
+		\item 
+		\item 
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Акт о внедрении}
+
+    \begin{figure}[h]
+        \includegraphics[width=0.45\textwidth]{./images/akt.jpg}
+        \caption{Акт о внедрении}
+        \label{fig:akt}
+        \centering
+    \end{figure}
+
 \end{frame}
 
 \end{document}
