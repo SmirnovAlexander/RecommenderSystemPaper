@@ -87,92 +87,120 @@
 
 
 \begin{frame}
-	\frametitle{Проблемы}
+	\frametitle{Подходы}
 
 	\begin{itemize}
+		\item Коллаборативная фильтрация;
+		\item Фильтрация на основе содержимого;
+		\item Фильтрация на основе популярности.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Коллаборативная фильтрация}
+
+	\begin{itemize}
+		\item Рекомендации в зависимости от истории похожих пользователей;
 		\item Проблемы:
 		      \begin{itemize}
 			      \item Холодный старт;
-			      \item Вычислительные затраты
-			      \item Разреженность данных
-			      \item 
+			      \item Вычислительные сложности;
+                  \item Отзывчивость системы на действия пользователей;
+			      \item Разреженность данных.
 		      \end{itemize}
-		\item clickbait
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Фильтрация на основе содержимого}
+
+	\begin{itemize}
+		\item Рекомендации в зависимости от истории взаимодействия пользователя;
+		\item Проблемы:
+		      \begin{itemize}
+			      \item Холодный старт;
+			      \item Векторизация рекомендуемого предмета;
+			      \item Однообразность содержимого.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Фильтрация на основе популярности}
+
+	\begin{itemize}
+		\item Рекомендуемые самые ``трендовые'' новости;
+		\item Проблемы:
+		      \begin{itemize}
+			      \item Отсутствие персонализации.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+	\frametitle{Описание подхода}
+
+    \begin{figure}[h]
+        \includegraphics[width=0.7\textwidth]{./images/architechture.pdf}
+        \caption{Обзор подхода}
+        \label{fig:arch}
+        \centering
+    \end{figure}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Описание подхода (продолжение)}
+
+	\begin{itemize}
+        \item Отбор кандидатов:
+            \begin{itemize}
+                \item Штраф за устаревание новости;
+                \item Грубая фильтрация по категориям;
+            \end{itemize}
+        \item Ранжирование:
+            \begin{itemize}
+                \item Коллаборативная фильтрация;
+                \item Фильтрация на основе содержимого;
+                \item Фильтрация на основе текущей сессии;
+                \item Фильтрация на основе популярности.
+            \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Описание подхода (продолжение)}
+
+	\begin{itemize}
+        \item Решённые проблемы:
+            \begin{itemize}
+			    \item Холодный старт;
+			    \item Вычислительные сложности;
+                \item Отзывчивость системы на действия пользователей;
+			    \item Векторизация рекомендуемого предмета;
+			    \item Однообразность содержимого;
+			    \item Отсутствие персонализации.
+            \end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+    \frametitle{Фильтрация на основе содержимого}
+
+	\begin{itemize}
 		\item 
 	\end{itemize}
 \end{frame}
 
-
 \begin{frame}
-	\frametitle{Описание модели}
+    \frametitle{Коллаборативная фильтрация}
 
 	\begin{itemize}
-		\item веса меняются со временем работы алгоритма
-		\item геолокация
 		\item 
-	\end{itemize}
-\end{frame}
-
-\begin{frame}
-	\frametitle{Content-based approach}
-
-	\begin{figure}[h]
-		\includegraphics[width=0.9\textwidth]{./images/content_based.jpeg}
-		\centering
-	\end{figure}
-\end{frame}
-
-
-\begin{frame}
-	\frametitle{Collaborative approach}
-
-	\begin{figure}[h]
-		\includegraphics[width=0.5\textwidth]{./images/collaborative.png}
-		\centering
-	\end{figure}
-\end{frame}
-
-
-
-\begin{frame}
-	\frametitle{Goal}
-
-	\begin{itemize}
-		\item Scalable hybrid news recommender system
-		\item Use as many information as possible
-		      \begin{itemize}
-			      \item users' logs
-			            \begin{itemize}
-				            \item likes
-				            \item comments
-				            \item views
-				            \item shows
-				            \item etc
-			            \end{itemize}
-			      \item news' features
-			            \begin{itemize}
-				            \item source
-				            \item popularity
-				            \item theme
-				            \item etc
-			            \end{itemize}
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-
-\begin{frame}
-	\frametitle{Solution}
-
-	\begin{itemize}
-		\item Hybrid recommender
-		      \begin{itemize}
-			      \item Collaborative recommender
-			      \item Content-based recommender
-			      \item Last Viewed recommender
-			      \item Boost recommender
-		      \end{itemize}
-		\item Optimize weights
 	\end{itemize}
 \end{frame}
 
@@ -194,11 +222,39 @@
 		\item A/B тестирование:
             \begin{itemize}
                 \item Время нахождения на вкладке ``новости'' за одну сессию;
+                \item Вовлечённость:
+                    \begin{itemize}
+                        \item Количество эмоций;
+                        \item Количество комментариев.
+                    \end{itemize}
             \end{itemize}
 		\item 
 		\item 
 	\end{itemize}
 \end{frame}
+
+
+
+
+
+\begin{frame}
+	\frametitle{Внедрение}
+
+	\begin{itemize}
+		\item Микросервисная архитектура:
+            \begin{itemize}
+                \item Алгоритмы рекомендаций;
+                \item Алгоритмы подготовки и обработки данных;
+            \end{itemize}
+		\item python, flask: разработка;
+		\item docker: упаковка решений;
+		\item k8s: оркестрация;
+		\item gitlab: версионирование; 
+		\item gitlab CI: непрерывная интеграция.
+	\end{itemize}
+\end{frame}
+
+
 
 \begin{frame}
 	\frametitle{Апробация}
@@ -216,9 +272,11 @@
 \begin{frame}
 	\frametitle{Результаты}
 	\begin{itemize}
-		\item 
-		\item 
-		\item 
+		\item Проведён обзор существующих решений;
+		\item Собрано уникальное решение;
+		\item Оценено качество предложенного решения;
+		\item Решение реализовано и внедрено в экосистему приложения ЯRUS;
+		\item Увеличено время нахождения пользователей в приложении и повышена вовлёченность.
 	\end{itemize}
 \end{frame}
 
@@ -232,6 +290,26 @@
         \label{fig:akt}
         \centering
     \end{figure}
+
+\end{frame}
+
+\begin{frame}
+	\frametitle{Заключение}
+
+
+    \begin{itemize}
+        \item Спасибо за внимание!
+        \item Задавайте вопросы.
+    \end{itemize}
+
+    \begin{itemize}
+        \item Ссылки:
+            \begin{itemize}
+                \item \href{https://yarus.ru/}{yarus.ru}
+                \item \href{https://t.me/furiousteabag}{@furiousteabag}
+            \end{itemize}
+    \end{itemize}
+
 
 \end{frame}
 
