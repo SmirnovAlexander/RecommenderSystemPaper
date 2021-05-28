@@ -1,5 +1,6 @@
 \documentclass[xetex,mathserif,serif]{beamer}
 
+\usepackage{graphicx}
 \setbeamertemplate{caption}[numbered]
 % Hyperlinks.
 \usepackage{hyperref}
@@ -138,6 +139,21 @@
 \end{frame}
 
 
+\begin{frame}
+	\frametitle{Гибридные подходы}
+
+	\begin{itemize}
+		\item Взвешенный;
+		\item Комбинация признаков;
+		\item Проблемы:
+		      \begin{itemize}
+			      \item Вычислительные сложности;
+                  \item Отзывчивость системы на действия пользователей;
+			      \item Векторизация рекомендуемого предмета;
+			      \item Разреженность данных.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
 
 \begin{frame}
 	\frametitle{Описание подхода}
@@ -165,8 +181,10 @@
                 \item Коллаборативная фильтрация;
                 \item Фильтрация на основе содержимого;
                 \item Фильтрация на основе текущей сессии;
-                \item Фильтрация на основе популярности.
+                \item Фильтрация на основе популярности;
             \end{itemize}
+        \item Вклад каждого алгоритма находится оптимизацией MAP@20;
+        \item Веса меняются с получением информации о действиях пользователя.
 	\end{itemize}
 \end{frame}
 
@@ -186,13 +204,38 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}
+	\frametitle{Составление таблицы предпочтений}
+
+	\begin{itemize}
+		\item По оси $x$ : пользователи;
+		\item По оси $y$ : новости;
+		\item Содержимое: как пользователь оценил новость:
+            \begin{itemize}
+                \item Факт показа новости;
+                \item Факт просмотра новости;
+                \item Какой \% новости прочитан;
+                \item Оставленная эмоция;
+                \item Оставленный комментарий.
+            \end{itemize}
+	\end{itemize}
+\end{frame}
 
 
 \begin{frame}
     \frametitle{Фильтрация на основе содержимого}
 
 	\begin{itemize}
-		\item 
+		\item Векторизация текста:
+            \begin{itemize}
+                \item LDA;
+                \item TF-IDF;
+            \end{itemize}
+		\item Составления вектора пользовательских предпочтений:
+            \begin{itemize}
+                \item Взвешенная сумма оценённых векторизованных новостей;
+            \end{itemize}
+		\item Сравнение вектора пользователя и вектора новости.
 	\end{itemize}
 \end{frame}
 
@@ -200,23 +243,62 @@
     \frametitle{Коллаборативная фильтрация}
 
 	\begin{itemize}
-		\item 
+		\item Матричное разложение Funk MF;
+		\item Пытаемся получить матрицы меньшей размерности, которые содержат скрытые признаки.
 	\end{itemize}
 \end{frame}
 
 \begin{frame}
     \frametitle{Оценка качества (offline)}
 
+
+    \begin{table}[]
+    \centering
+    \resizebox{0.5\textwidth}{!}{%
+    \begin{tabular}{cc}
+        {\color[HTML]{000000} \textbf{method}} & {\color[HTML]{000000} \textbf{recall@20}} \\
+    {\color[HTML]{000000} Multi-Gradient Descent} & {\color[HTML]{000000} 0.418} \\
+    {\color[HTML]{000000} H+Vamp Gated} & {\color[HTML]{000000} 0.413} \\
+    {\color[HTML]{000000} RaCT} & {\color[HTML]{000000} 0.403} \\
+    {\color[HTML]{000000} Hybrid Recommender} & {\color[HTML]{000000} 0.398} \\
+    {\color[HTML]{000000} Mult-VAE PR} & {\color[HTML]{000000} 0.395} 
+    \end{tabular}%
+    }
+    \caption{Benchmark on MovieLens 20M}
+    \label{tab:movie}
+    \end{table}
+
 	\begin{itemize}
-		\item MAP@20
-		\item NDCG
-		\item 
+		\item Метод не сильно хуже лучших моделей на benchmark датасете:
+            \begin{itemize}
+                \item Подход обобщается на другие доменные области;
+            \end{itemize}
+		\item Преимущество в решение продуктовых проблем.
 	\end{itemize}
+
 \end{frame}
 
 
 \begin{frame}
 	\frametitle{Оценка качества (online)}
+
+        % Please add the following required packages to your document preamble:
+    % \usepackage{graphicx}
+    % \usepackage[table,xcdraw]{xcolor}
+    % If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+    \begin{table}[]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{ccccc}
+    {\color[HTML]{000000} \textbf{feature}} & {\color[HTML]{000000} \textbf{popularity}} & \textbf{content} & \textbf{collaborative} & \textbf{hybrid} \\
+    {\color[HTML]{000000} session duration} & {\color[HTML]{000000} 121} & 110 & 156 & 302 \\
+    {\color[HTML]{000000} emoji number} & {\color[HTML]{000000} 1.1} & 0.8 & 1.4 & 2.5 \\
+    {\color[HTML]{000000} comments number} & {\color[HTML]{000000} 0.2} & 0.1 & 0.4 & 0.8
+    \end{tabular}%
+    }
+    \caption{Online evaluation}
+    \label{tab:eval}
+    \end{table}
 
 	\begin{itemize}
 		\item A/B тестирование:
@@ -228,8 +310,6 @@
                         \item Количество комментариев.
                     \end{itemize}
             \end{itemize}
-		\item 
-		\item 
 	\end{itemize}
 \end{frame}
 
@@ -276,6 +356,7 @@
 		\item Собрано уникальное решение;
 		\item Оценено качество предложенного решения;
 		\item Решение реализовано и внедрено в экосистему приложения ЯRUS;
+        \item Разработана платформа для A/B тестирования;
 		\item Увеличено время нахождения пользователей в приложении и повышена вовлёченность.
 	\end{itemize}
 \end{frame}
